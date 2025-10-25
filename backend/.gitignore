@@ -1,0 +1,52 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime / dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+build
+lib
+out
+*.tsbuildinfo
+
+# TypeScript/compilation caches
+.cache
+.parcel-cache
+.nyc_output
+
+# Test coverage
+coverage
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Misc / deployment
+*.local
+.serverless
+.vercel
+.next
+*.pem
+.secrets
