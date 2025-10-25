@@ -1,4 +1,4 @@
-import User, { JWTPayload } from "../models/user.model.js";
+import Client, { JWTPayload } from "../models/clients.model.js";
 import jwt, { Secret } from "jsonwebtoken";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -18,13 +18,13 @@ const verifyJWT = asyncHandler(
       token,
       process.env.ACCESS_TOKEN_SECRET as Secret
     ) as JWTPayload;
-    
-    const user = await User.findById(decoded.id);
-    if (!user) {
-      throw new ApiError(0, "User not found");
+
+    const client = await Client.findById(decoded.id);
+    if (!client) {
+      throw new ApiError(0, "Client not found");
     }
 
-    req.user = user as any;
+    req.client = client as any;
     next();
   }
 );

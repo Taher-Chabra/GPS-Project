@@ -4,7 +4,7 @@ function Home() {
   return (
     <section>
       <h1 className="text-3xl font-semibold text-gray-900 dark:text-white text-center mb-10">
-        GPS Project
+        GPS Tracking System
       </h1>
       <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
         <Link to="/login">

@@ -1,13 +1,15 @@
 import express from 'express';
-import { loginUser, sendCaptchaCode, registerUser } from '../controllers/people.controller.js';
+import { loginClient, sendCaptchaCode, registerClient, logoutClient } from '../controllers/people.controller.js';
 import { registerValidationRules } from "@/middlewares/validation.middleware.js";
 
 const router: express.Router = express.Router();
 
 router.route('/captcha').get(sendCaptchaCode);
 
-router.route('/login').post(loginUser);
+router.route('/login').post(loginClient);
 
-router.route('/register').post(registerValidationRules, registerUser);
+router.route('/register').post(registerValidationRules, registerClient);
+
+router.route('/logout').post(logoutClient);
 
 export default router;

@@ -5,18 +5,21 @@ import jwt, { Secret, SignOptions } from "jsonwebtoken";
 
 export type JWTPayload = { id: string; email: string };
 
-export interface UserDocument extends mongoose.Document {
+export interface ClientDocument extends mongoose.Document {
   slno: number;
   email: string;
-  role: "client" | "guest" | "admin";
+  role: "client" | "guest" | "administrator";
   password: string;
+  client_db?: string;
+  expiryOn?: Date;
+  status: '0' | '1' | '2' | '3';
   refreshToken?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
 }
 
-const UserSchema = new mongoose.Schema<UserDocument>(
+const ClientSchema = new mongoose.Schema<ClientDocument>(
   {
     slno: {
       type: Number,
@@ -31,13 +34,24 @@ const UserSchema = new mongoose.Schema<UserDocument>(
     },
     role: {
       type: String,
-      enum: ["client", "guest", "admin"],
+      enum: ["client", "guest", "administrator"],
       default: "guest",
     },
     password: {
       type: String,
       required: true,
       minLength: [8, "Password must be at least 8 characters long"],
+    },
+    client_db: {
+      type: String,
+    },
+    expiryOn: {
+      type: Date
+    },
+    status: {
+      type: String,
+      default: 1,
+      enum: ['0', '1', '2', '3'] // 0: Inactive, 1: Active, 2: Paused, 3: Blacklisted
     },
     refreshToken: {
       type: String,
@@ -47,25 +61,25 @@ const UserSchema = new mongoose.Schema<UserDocument>(
   { timestamps: true }
 );
 
-UserSchema.pre("save", async function (next) {
-  const user = this;
-  if (!user.isModified("password")) {
+ClientSchema.pre("save", async function (next) {
+  const client = this;
+  if (!client.isModified("password")) {
     return next();
   }
 
   const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(user.password, salt);
-  user.password = hashedPassword;
+  const hashedPassword = await bcrypt.hash(client.password, salt);
+  client.password = hashedPassword;
   next();
 });
 
-UserSchema.methods.comparePassword = async function (
+ClientSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-UserSchema.methods.generateAccessToken = function (): string {
+ClientSchema.methods.generateAccessToken = function (): string {
   const payload: JWTPayload = { id: this._id, email: this.email };
   const secret = process.env.ACCESS_TOKEN_SECRET as Secret;
   const options: SignOptions = { expiresIn: "15m" };
@@ -73,7 +87,7 @@ UserSchema.methods.generateAccessToken = function (): string {
   return jwt.sign(payload, secret, options);
 };
 
-UserSchema.methods.generateRefreshToken = function (): string {
+ClientSchema.methods.generateRefreshToken = function (): string {
   const payload = { id: this._id };
   const secret = process.env.REFRESH_TOKEN_SECRET as Secret;
   const options: SignOptions = { expiresIn: "3d" };
@@ -82,8 +96,8 @@ UserSchema.methods.generateRefreshToken = function (): string {
 };
 
 const AutoIncrement = AutoIncrementFactory(mongoose as any);
-UserSchema.plugin(AutoIncrement as any, { inc_field: "slno" });
+ClientSchema.plugin(AutoIncrement as any, { inc_field: "slno" });
 
-const User = mongoose.model("User", UserSchema);
+const Client = mongoose.model("Client", ClientSchema);
 
-export default User;
+export default Client;

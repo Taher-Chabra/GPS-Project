@@ -1,4 +1,4 @@
-import User, { UserDocument } from "../models/user.model.js";
+import Client, { ClientDocument } from "../models/clients.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -20,8 +20,8 @@ const sendCaptchaCode = asyncHandler(async (req, res) => {
   return res.type("image/svg+xml").send(captcha.data);
 });
 
-// Login User
-const loginUser = asyncHandler(async (req, res) => {
+// Login Client
+const loginClient = asyncHandler(async (req, res) => {
   const { email, password, captchaToken } = req.body;
   console.log(email, password, captchaToken);
   if (!email || !password || !captchaToken) {
@@ -35,79 +35,85 @@ const loginUser = asyncHandler(async (req, res) => {
 
   req.session.captcha = null;
 
-  const user: UserDocument | null = await User.findOne({ email }).select(
+  const client: ClientDocument | null = await Client.findOne({ email }).select(
     "-refreshToken"
   );
-  if (!user) {
-    throw new ApiError(0, "User not found");
+  if (!client) {
+    throw new ApiError(0, "Client not found");
   }
-  const isPasswordValid = await user.comparePassword(password);
+  const isPasswordValid = await client.comparePassword(password);
   if (!isPasswordValid) {
     throw new ApiError(2); // Invalid Password
   }
 
   const { accessToken, refreshToken, cookieOptions } = await generateAuthTokens(
-    user._id as mongoose.Types.ObjectId
+    client._id as mongoose.Types.ObjectId
   );
 
-  const userObject = user.toObject();
-  delete userObject.password;
+  const clientObject = client.toObject();
+  delete clientObject.password;
 
   return res
     .cookie("accessToken", accessToken, cookieOptions)
     .cookie("refreshToken", refreshToken, cookieOptions)
-    .json(new ApiResponse(1, { user: userObject }, true));
+    .json(new ApiResponse(1, { client: clientObject }, true));
 });
 
-// Register User
-const registerUser = asyncHandler(async (req, res) => {
+// Register Client
+const registerClient = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json(new ApiError(-1)); // Data not valid
   }
 
-  const { email, password, role } = req.body;
-  if (!email || !password || !role) {
+  const { email, password, role, ledgerName, expiryOn } = req.body;
+  if (
+    Object.values(req.body).some(
+      (value) => value === undefined || value === null || value === ""
+    )
+  ) {
     throw new ApiError(-1); // Data not valid
   }
 
-  const existingUser: UserDocument | null = await User.findOne({
+  const existingClient: ClientDocument | null = await Client.findOne({
     email,
   }).select("-password -refreshToken");
-  if (existingUser) {
-    throw new ApiError(-1, "User already exists");
+  if (existingClient) {
+    throw new ApiError(-1, "Client already exists");
   }
 
-  const newUser = await User.create({
+  const newClient = await Client.create({
     email,
     password,
     role,
+    client_db: ledgerName,
+    expiryOn,
   });
-  if (!newUser) {
-    throw new ApiError(0, "User creation failed");
+  if (!newClient) {
+    throw new ApiError(0, "Client creation failed");
   }
 
-  return res.json(new ApiResponse(1, { user: newUser }, true));
+  return res.json(new ApiResponse(1, { client: newClient }, true));
 });
 
-// logout User
-const logoutUser = asyncHandler(async (req, res) => {
-  const user = req.user as unknown as UserDocument;
+// logout Client
+const logoutClient = asyncHandler(async (req, res) => {
+  const client = req.client as unknown as ClientDocument;
 
-  if (!user) {
-    throw new ApiError(0); // User not found
+  if (!client) {
+    throw new ApiError(0); // Client not found
   }
 
-  await User.findByIdAndUpdate(
-    user._id,
+  await Client.findByIdAndUpdate(
+    client._id,
     { $unset: { refreshToken: 1 } },
     { new: true }
   );
 
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax' as const,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
   };
 
   return res
@@ -116,4 +122,4 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(1, null, true));
 });
 
-export { sendCaptchaCode, loginUser, registerUser, logoutUser };
+export { sendCaptchaCode, loginClient, registerClient, logoutClient };

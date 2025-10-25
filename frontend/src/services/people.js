@@ -6,16 +6,22 @@ const fetchCaptcha = async () => {
    return response;
 }
 
-// register user
-const registerUser = async(userData) => {
+// register client
+const registerClient = async(userData) => {
    const response = await api.post('/people/register', userData);
    return response;
 }
 
-// login user
-const loginUser = async(userData) => {
+// login client
+const loginClient = async(userData) => {
    const response = await api.post('/people/login', userData);
    return response;
 }
 
-export { fetchCaptcha, registerUser, loginUser };
+// logout client
+const logoutClient = async() => {
+   const response = await api.post('/people/logout');
+   return response;
+}
+
+export { fetchCaptcha, registerClient, loginClient, logoutClient };

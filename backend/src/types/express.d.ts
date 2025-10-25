@@ -1,9 +1,9 @@
-import User from "../models/user.model.ts";
+import Client from "../models/clients.model.ts";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: typeof User;
+      client?: typeof Client;
     }
   }
 }

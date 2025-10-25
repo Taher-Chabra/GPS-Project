@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { fetchCaptcha, loginUser } from "../services/people";
+import { fetchCaptcha, loginClient } from "../services/people";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -26,7 +26,7 @@ function Login() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await loginUser(data);
+      const response = await loginClient(data);
       if (response.status === 200 && response.data.success) {
         alert("Login successful!");
       } else {

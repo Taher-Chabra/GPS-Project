@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
-import User, { UserDocument } from "../models/user.model.js";
+import Client, { ClientDocument } from "../models/clients.model.js";
 import { ApiError } from "./ApiError.js";
 
-const generateAuthTokens = async (userId: mongoose.Types.ObjectId) => {
-  const user: UserDocument | null = await User.findById(userId);
-  if (!user) {
-    throw new ApiError(0); // User not Found
+const generateAuthTokens = async (clientId: mongoose.Types.ObjectId) => {
+  const client: ClientDocument | null = await Client.findById(clientId);
+  if (!client) {
+    throw new ApiError(0); // Client not Found
   }
-  const accessToken = user.generateAccessToken();
-  const refreshToken = user.generateRefreshToken();
+  const accessToken = client.generateAccessToken();
+  const refreshToken = client.generateRefreshToken();
 
-  user.refreshToken = refreshToken;
-  await user.save();
+  client.refreshToken = refreshToken;
+  await client.save();
 
   const cookieOptions = {
     httpOnly: true,
