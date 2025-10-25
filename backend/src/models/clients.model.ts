@@ -3,7 +3,7 @@ import AutoIncrementFactory from "mongoose-sequence";
 import bcrypt from "bcrypt";
 import jwt, { Secret, SignOptions } from "jsonwebtoken";
 
-export type JWTPayload = { id: string; email: string };
+export type JWTPayload = { id: string; email: string, role: string, expiryOn?: Date };
 
 export interface ClientDocument extends mongoose.Document {
   slno: number;
@@ -80,7 +80,7 @@ ClientSchema.methods.comparePassword = async function (
 };
 
 ClientSchema.methods.generateAccessToken = function (): string {
-  const payload: JWTPayload = { id: this._id, email: this.email };
+  const payload: JWTPayload = { id: this._id, email: this.email, role: this.role, expiryOn: this.expiryOn };
   const secret = process.env.ACCESS_TOKEN_SECRET as Secret;
   const options: SignOptions = { expiresIn: "15m" };
 
