@@ -1,13 +1,16 @@
 @import "tailwindcss";
+/* @plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json"; */
 
 @theme {
   --breakpoint-xs: 25rem;
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --font-family: "Roboto Slab", serif;
+  --font-weight: 400;
+  --font-size: 16px;
+  --line-height: 1.5;
   margin: 0;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -18,4 +21,9 @@
 body {
   color-scheme: light dark;
   color: inherit;
+  font-family: var(--font-family);
+  font-weight: var(--font-weight);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  font-style: normal;
 }

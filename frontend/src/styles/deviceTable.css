@@ -1,0 +1,57 @@
+.datatable-dropdown label {
+  color: #555;
+}
+
+.datatable-selector {
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+}
+
+.datatable-input {
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  outline: none;
+  background-color: #f5f2f2;
+  color: #555;
+}
+
+.datatable-input:focus {
+  border-color: #999;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.datatable-info {
+  color: #555;
+}
+
+.datatable-pagination a,
+.datatable-pagination button {
+  color: #555;
+  border-radius: 5px;
+}
+
+.datatable-pagination a:hover,
+.datatable-pagination button:hover {
+  background-color: #d9d9d9;
+  color: #000;
+}
+
+.datatable-pagination .datatable-active a,
+.datatable-pagination .datatable-active a:focus,
+.datatable-pagination .datatable-active a:hover,
+.datatable-pagination .datatable-active button,
+.datatable-pagination .datatable-active button:focus,
+.datatable-pagination .datatable-active button:hover {
+   background-color: #c5c5c5;
+   color: #000;
+}
+
+/* TABLE */
+.datatable-table {
+  border-spacing: 4px;
+}
+
+.datatable-table > thead > tr > th {
+  background-color: #f1f0f0;
+  border-radius: 3px;
+}
