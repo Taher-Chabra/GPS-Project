@@ -1,26 +1,26 @@
-import { api } from "../lib/api";
+import { formsApi } from "../lib/formsApi";
 
 //fetch captcha code
 const fetchCaptcha = async () => {
-   const response = await api.get('/people/captcha');
+   const response = await formsApi.get('/people/captcha');
    return response;
 }
 
 // register client
 const registerClient = async(userData) => {
-   const response = await api.post('/people/register', userData);
+   const response = await formsApi.post('/people/register', userData);
    return response;
 }
 
 // login client
 const loginClient = async(userData) => {
-   const response = await api.post('/people/login', userData);
+   const response = await formsApi.post('/people/login', userData);
    return response;
 }
 
 // logout client
 const logoutClient = async() => {
-   const response = await api.post('/people/logout');
+   const response = await formsApi.post('/people/logout');
    return response;
 }
 

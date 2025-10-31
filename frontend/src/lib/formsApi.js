@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const api = axios.create({
+export const formsApi = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
   headers: {
@@ -12,10 +12,9 @@ export const api = axios.create({
   timeout: 10000,
 });
 
-api.interceptors.response.use(
+formsApi.interceptors.response.use(
   (response) => response,
   (error) => {
-   console.log(API_BASE_URL)
     return Promise.reject(error);
   }
 );
